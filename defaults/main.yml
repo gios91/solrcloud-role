@@ -1,6 +1,6 @@
 ---
 ## General
-solr_version: 7.5.0
+solr_version: 5.5.1
 
 ## Service options
 
@@ -25,7 +25,7 @@ solr_log_file_size: 500MB
 solr_log_max_backup_index: 9
 
 # Ports
-solr_host: "{{ hostvars[ansible_nodename]['ansible_' + ansible_default_ipv4.alias]['ipv4']['address'] }}"
+solr_host: "{{ hostvars[facter_ec2_local_ipv4]['ansible_' + ansible_default_ipv4.alias]['ipv4']['address'] }}"
 solr_port: 8983
 solr_url: http://{{ solr_host }}:{{ solr_port }}/solr
 solr_jmx_enabled: 'true'
@@ -71,7 +71,9 @@ solr_jetty_http_selectors: -1
 solr_jetty_http_acceptors: -1
 
 # Zookeeper
-solr_zookeeper_hosts: localhost:2181
+solr_zookeeper_master_endpoint: 10.228.140.220
+
+solr_zookeeper_hosts: "{{ zookeeper_master_endpoint }}":2181
 solr_zookeeper_hosts_solr_path: solr
 solr_zk_host: "{{ solr_zookeeper_hosts }}/{{ solr_zookeeper_hosts_solr_path }}"
 solr_zookeeper_client_path: /opt/solr/server/scripts/cloud-scripts

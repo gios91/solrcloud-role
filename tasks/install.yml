@@ -51,6 +51,7 @@
   get_url:
     url: "{{ solr_cloud_url }}"
     dest: /tmp/{{ solr_cloud_package }}
+    use_proxy: no
   when: |
       service_solrcloud_status.rc > 0 or
       service_solrcloud_status is success and
@@ -70,7 +71,7 @@
     - skip_ansible_lint
 
 - name: SolrCloud | Execute SolrCloud installation script
-  shell: /tmp/install_solr_service.sh /tmp/{{ solr_cloud_package }} -f -u {{ solr_user }} -n
+  shell: /tmp/install_solr_service.sh /tmp/{{ solr_cloud_package }} -f -u {{ solr_user }}
   when: |
       service_solrcloud_status.rc > 0 or
       service_solrcloud_status is success and

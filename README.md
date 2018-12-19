@@ -1,8 +1,4 @@
-![Logo](https://raw.githubusercontent.com/idealista/solrcloud-role/master/logo.gif)
-
-[![Build Status](https://travis-ci.org/idealista/solrcloud-role.png)](https://travis-ci.org/idealista/solrcloud-role)
-
-# SolrCloud Ansible role
+# SolrCloud Ansible role (AWS EC2 version with SolrCloud 5.5.1)
 
 This ansible role installs a SolrCloud server in a debian environment.
 
@@ -127,7 +123,64 @@ See also the list of [contributors](https://github.com/idealista/solrcloud-role/
 ![Apache 2.0 Licence](https://img.shields.io/hexpm/l/plug.svg)
 
 This project is licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) license - see the [LICENSE](LICENSE) file for details.
+```
 
-## Contributing
+# Steps for SolrCloud setup on YNAP EMR cluster
 
-Please read [CONTRIBUTING.md](https://github.com/idealista/solrcloud-role/blob/master/.github/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+- 1. Connect via SSH on all cluster nodes
+```
+mv aws-key.pem ~/.ssh/
+chmod 600 ~/.ssh/aws-key.pem
+```
+
+```
+for all nodes: 
+ssh -i ~/.ssh/aws-key.pem hadoop@NODE_IP
+```
+
+- 2. Install Ansible on Master node (Centos 6)
+
+```
+yum install epel-release
+yum-config-manager --enable epel
+yum update && yum install ansible 
+```
+
+- 3. Setup Hosts  
+
+create inventory.yml file with hosts and link to ssh_key
+
+```
+[hosts:vars]
+ansible_ssh_private_key_file = PATH_TO_PEM_KEY
+
+[hosts]
+ip1
+ip2
+ipN
+```
+
+- 4. Install solr-cloud role
+
+create a file requirements.yml with following content:
+
+- src: idealista.solrcloud-role
+  version: 1.8.0
+  name: solrcloud
+
+```
+sudo ansible-galaxy install -p roles -r requirements.yml -f --ignore-certs
+```
+
+execute playbook
+
+# Solr bin path on AWS EC2
+
+```
+./opt/solr-5.5.1/bin/solr
+```
+
+for info follow: 
+	install and setup ansible: https://community.spiceworks.com/how_to/110616-install-ansible-on-64-bit-centos-6-6
+	configure use epel repo: https://linuxacademy.com/community/posts/show/topic/25457-i-could-not-install-ansible-in-aws-instance-ec2
+
